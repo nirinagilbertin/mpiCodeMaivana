@@ -10,6 +10,8 @@ import userRoutes from './routes/user.routes.js';
 import reportRoute from './routes/report.routes.js';
 import categoryRoute from './routes/category.routes.js';
 import postRoute from './routes/post.routes.js';
+import notificationRoute from './routes/notification.routes.js';
+import dashboardRoute from './routes/dashboard.routes.js';
 
 dotenv.config();
 
@@ -63,6 +65,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/reports', reportRoute(models));
 app.use('/api/categories', categoryRoute(models))
 app.use('/api/posts', postRoute(models));
+app.use('/api/notifications', notificationRoute(models));
+app.use('/api/dashboard', dashboardRoute(models));
 
 app.use((req, res) => {
   res.status(404).json({
