@@ -1,0 +1,12 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend",
+  "license": "ISC",
+  "author": "mpicode maivana",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodemon app.js"
+  }
+}
