@@ -6,9 +6,9 @@ import connectPgSimple from 'connect-pg-simple';
 import dotenv from 'dotenv';
 
 import models, { sequelize } from './models/index.js';
-import userRoutes from './routes/user.route.js';
-import reportRoute from './routes/report.route.js';
-import categoryRoute from './routes/category.route.js';
+import userRoutes from './routes/user.routes.js';
+import reportRoute from './routes/report.routes.js';
+import categoryRoute from './routes/category.routes.js';
 import postRoute from './routes/post.routes.js';
 
 dotenv.config();
