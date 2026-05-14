@@ -1,51 +1,26 @@
-import { useEffect, useRef, useCallback } from "react";
-import { initSocket, getSocket, disconnectSocket } from "../services/socket";
-import { USE_MOCKS } from "../services/api";
+import { useEffect, useCallback } from "react";
+import { initSocket, disconnectSocket } from "../services/socket";
 
 type SocketCallback = (...args: unknown[]) => void;
 
-export function useSocket(token?: string) {
-  const listenersRef = useRef<Map<string, SocketCallback>>(new Map());
-
+export function useSocket(_token?: string) {
   useEffect(() => {
-    if (!USE_MOCKS && token) {
-      initSocket(token);
-    }
-
+    initSocket(_token);
     return () => {
       disconnectSocket();
     };
-  }, [token]);
+  }, [_token]);
 
-  const on = useCallback((event: string, callback: SocketCallback) => {
-    if (USE_MOCKS) return;
-
-    const socket = getSocket();
-    if (socket) {
-      socket.on(event, callback);
-      listenersRef.current.set(event, callback);
-    }
+  const on = useCallback((_event: string, _callback: SocketCallback) => {
+    // Socket disabled in frontend for now
   }, []);
 
-  const off = useCallback((event: string) => {
-    if (USE_MOCKS) return;
-
-    const socket = getSocket();
-    const callback = listenersRef.current.get(event);
-    if (socket && callback) {
-      socket.off(event, callback);
-      listenersRef.current.delete(event);
-    }
+  const off = useCallback((_event: string) => {
+    // Socket disabled in frontend for now
   }, []);
 
-  const emit = useCallback((event: string, data?: unknown) => {
-    if (USE_MOCKS) {
-      console.log(`[Mock Socket] emit "${event}"`, data);
-      return;
-    }
-
-    const socket = getSocket();
-    socket?.emit(event, data);
+  const emit = useCallback((_event: string, _data?: unknown) => {
+    // Socket disabled in frontend for now
   }, []);
 
   return { on, off, emit };

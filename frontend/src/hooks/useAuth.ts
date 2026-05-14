@@ -35,9 +35,8 @@ export function useAuth() {
       setError(null);
       setLoading(true);
       try {
-        const { user: u, token } = await login(email, password);
+        const { user: u } = await login(email, password);
         setUser(u);
-        localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(u));
         return true;
       } catch (err) {
@@ -62,9 +61,8 @@ export function useAuth() {
       setError(null);
       setLoading(true);
       try {
-        const { user: u, token } = await register(data);
+        const { user: u } = await register(data);
         setUser(u);
-        localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(u));
         return true;
       } catch (err) {

@@ -22,9 +22,8 @@ export async function getCurrentUser(): Promise<User> {
 export async function login(
   email: string,
   password: string
-): Promise<{ user: User; token: string }> {
+): Promise<{ user: User; token?: string }> {
   if (USE_MOCKS) {
-    // Simulation : admin si email contient "admin"
     const user = email.includes("admin") ? mockAdminUser : mockCurrentUser;
     return { user, token: "mock-token-12345" };
   }
@@ -33,19 +32,20 @@ export async function login(
     email,
     password,
   });
-  return response.data;
+  return { user: response.data };
 }
 
 /**
  * Inscription
  */
+
 export async function register(data: {
   email: string;
   password: string;
   fullName: string;
   phone?: string;
   neighborhood?: string;
-}): Promise<{ user: User; token: string }> {
+}): Promise<{ user: User; token?: string }> {
   if (USE_MOCKS) {
     return {
       user: {
@@ -63,13 +63,20 @@ export async function register(data: {
   }
 
   const response = await apiClient.post(ENDPOINTS.AUTH.REGISTER, data);
-  return response.data;
+  return { user: response.data };
 }
 
 /**
  * Déconnexion
  */
+
 export function logout(): void {
+  if (!USE_MOCKS) {
+    apiClient
+      .post(ENDPOINTS.AUTH.LOGOUT)
+      .catch((error) => console.error("Erreur lors de la déconnexion :", error));
+  }
+
   localStorage.removeItem("token");
   localStorage.removeItem("user");
 }

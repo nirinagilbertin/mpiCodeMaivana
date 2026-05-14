@@ -75,7 +75,7 @@ export default function MapPage() {
                 <Card key={report.id} padding="sm" className="flex items-center gap-3">
                   <AlertTriangle
                     size={16}
-                    className="text-red-500 flex-shrink-0"
+                    className="text-red-500 shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">

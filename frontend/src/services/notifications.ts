@@ -50,5 +50,5 @@ export async function getUnreadCount(): Promise<number> {
   const response = await apiClient.get(
     `${ENDPOINTS.NOTIFICATIONS.BASE}/unread-count`
   );
-  return response.data.count;
+  return response.data.unreadCount;
 }

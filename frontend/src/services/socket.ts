@@ -1,88 +1,51 @@
-import { io, Socket } from "socket.io-client";
-import { ENDPOINTS } from "../config/endpoints";
-
 const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === "true";
 
-let socket: Socket | null = null;
-
 /**
- * Initialise la connexion Socket.io
+ * Initialise la connexion socket (désactivée côté frontend)
  */
-export function initSocket(token?: string): Socket | null {
+export function initSocket(_token?: string): null {
   if (USE_MOCKS) {
     console.log("[Mock] Socket.io simulé - pas de connexion réelle");
-    return null;
+  } else {
+    console.log("[Socket] Socket.io désactivé côté frontend");
   }
-
-  if (socket?.connected) return socket;
-
-  socket = io(ENDPOINTS.SOCKET, {
-    auth: { token },
-    transports: ["websocket"],
-    autoConnect: true,
-  });
-
-  socket.on("connect", () => {
-    console.log("[Socket] Connecté:", socket?.id);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("[Socket] Déconnecté");
-  });
-
-  socket.on("connect_error", (error) => {
-    console.error("[Socket] Erreur de connexion:", error.message);
-  });
-
-  return socket;
+  return null;
 }
 
 /**
- * Retourne l'instance socket existante
+ * Rejoint une room (no-op)
  */
-export function getSocket(): Socket | null {
-  return socket;
+export function joinRoom(_room: string): void {
+  // Socket disabled in frontend for now
 }
 
 /**
- * Rejoint une room (ex: quartier)
+ * Quitte une room (no-op)
  */
-export function joinRoom(room: string): void {
-  if (USE_MOCKS) return;
-  socket?.emit("join", room);
+export function leaveRoom(_room: string): void {
+  // Socket disabled in frontend for now
 }
 
 /**
- * Quitte une room
- */
-export function leaveRoom(room: string): void {
-  if (USE_MOCKS) return;
-  socket?.emit("leave", room);
-}
-
-/**
- * Écoute un événement socket
+ * Écoute un événement socket (no-op)
  */
 export function onSocketEvent(
-  event: string,
-  callback: (...args: unknown[]) => void
+  _event: string,
+  _callback: (...args: unknown[]) => void
 ): void {
-  if (USE_MOCKS) return;
-  socket?.on(event, callback);
+  // Socket disabled in frontend for now
 }
 
 /**
- * Supprime l'écoute d'un événement
+ * Supprime l'écoute d'un événement (no-op)
  */
-export function offSocketEvent(event: string): void {
-  if (USE_MOCKS) return;
-  socket?.off(event);
+export function offSocketEvent(_event: string): void {
+  // Socket disabled in frontend for now
 }
 
 /**
- * Déconnecte le socket
+ * Déconnecte le socket (no-op)
  */
 export function disconnectSocket(): void {
-  socket?.disconnect();
-  socket = null;
+  // Socket disabled in frontend for now
 }

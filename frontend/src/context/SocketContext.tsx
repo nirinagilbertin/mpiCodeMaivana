@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { useSocket } from "../hooks/useSocket";
-import { useAuthContext } from "./AuthContext";
 import type { ReportWithRelations } from "../types/report";
 import { USE_MOCKS } from "../services/api";
 import { mockReports } from "../mocks/reports";
@@ -10,24 +9,20 @@ interface SocketContextType {
   off: (event: string) => void;
   emit: (event: string, data?: unknown) => void;
   isConnected: boolean;
-  // Événements simulés en mode mock
   newReports: ReportWithRelations[];
 }
 
 const SocketContext = createContext<SocketContextType | null>(null);
 
 export function SocketProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuthContext();
-  const { on, off, emit } = useSocket(user ? "mock-token" : undefined);
+  const { on, off, emit } = useSocket();
   const [isConnected, setIsConnected] = useState(false);
   const [newReports, setNewReports] = useState<ReportWithRelations[]>([]);
 
   useEffect(() => {
     if (USE_MOCKS) {
-      // Simule la connexion
       setIsConnected(true);
 
-      // Simule l'arrivée de nouveaux signalements toutes les 45 secondes
       const interval = setInterval(() => {
         const randomReport = mockReports[Math.floor(Math.random() * mockReports.length)];
         if (randomReport) {
@@ -48,20 +43,8 @@ export function SocketProvider({ children }: { children: ReactNode }) {
       };
     }
 
-    // En mode réel, écoute les événements socket
-    on("connect", () => setIsConnected(true));
-    on("disconnect", () => setIsConnected(false));
-    on("new-report", (data: unknown) => {
-      const report = data as ReportWithRelations;
-      setNewReports((prev) => [report, ...prev].slice(0, 10));
-    });
-
-    return () => {
-      off("connect");
-      off("disconnect");
-      off("new-report");
-    };
-  }, [on, off]);
+    return undefined;
+  }, []);
 
   const value: SocketContextType = {
     on,
