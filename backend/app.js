@@ -11,7 +11,7 @@ import userRoutes from './routes/user.route.js';
 dotenv.config();
 
 const app = express();
-const PORT = parseInt(process.env.PORT, 10) || 5000;
+const PORT = parseInt(process.env.SERVER_PORT, 10) || 5000;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'fianara-connect-secret';
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
