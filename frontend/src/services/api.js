@@ -15,6 +15,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Non authentifié – on pourrait rediriger vers login
       console.warn('Session expirée ou non authentifié');
+        // Optionnel : déclencher un événement ou un callback
     }
     return Promise.reject(error);
   }
