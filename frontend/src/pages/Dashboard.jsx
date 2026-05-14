@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { adminService } from '../services/adminService';
-import { FadeIn, Card, Loader, Button } from '../components';
+import { categoryService } from '../services/categoryService';
+import { FadeIn, Card, Loader, Button, Input, Textarea, Modal } from '../components';
 import BarChart from '../components/BarChart';
 import LineChart from '../components/LineChart';
 import { 
-  FileText, AlertTriangle, CheckCircle, TrendingUp, Users, Download
+  FileText, AlertTriangle, CheckCircle, TrendingUp, Users, Download, Plus, Edit, Trash2
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -13,6 +14,9 @@ const Dashboard = () => {
   const [evolutionData, setEvolutionData] = useState(null);
   const [topNeighborhoods, setTopNeighborhoods] = useState([]);
   const [recentActivities, setRecentActivities] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [categoryForm, setCategoryForm] = useState({ name: '', icon: '', color: '#6c757d', isActive: true });
   const [loading, setLoading] = useState(true);
   const [generatingReport, setGeneratingReport] = useState(false);
 
@@ -23,18 +27,20 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const [overviewRes, categoryRes, evolutionRes, neighborhoodsRes, activitiesRes] = await Promise.all([
+      const [overviewRes, categoryRes, evolutionRes, neighborhoodsRes, activitiesRes, categoriesRes] = await Promise.all([
         adminService.getDashboardOverview(),
         adminService.getReportsByCategory(),
         adminService.getReportsEvolution(30),
         adminService.getTopNeighborhoods(),
         adminService.getRecentActivities(),
+        categoryService.getAll(true),
       ]);
       setOverview(overviewRes.data.data);
       prepareCategoryChart(categoryRes.data.data);
       prepareEvolutionChart(evolutionRes.data.data);
       setTopNeighborhoods(neighborhoodsRes.data.data);
       setRecentActivities(activitiesRes.data.data);
+      setCategories(categoriesRes.data.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -88,6 +94,28 @@ const Dashboard = () => {
       console.error(err);
     } finally {
       setGeneratingReport(false);
+    }
+  };
+
+  const handleCreateCategory = async () => {
+    try {
+      await categoryService.create(categoryForm);
+      setShowCategoryModal(false);
+      setCategoryForm({ name: '', icon: '', color: '#6c757d', isActive: true });
+      fetchDashboardData(); // Refresh categories
+    } catch (err) {
+      console.error('Erreur création catégorie:', err);
+    }
+  };
+
+  const handleDeleteCategory = async (id) => {
+    if (window.confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
+      try {
+        await categoryService.delete(id);
+        fetchDashboardData(); // Refresh categories
+      } catch (err) {
+        console.error('Erreur suppression catégorie:', err);
+      }
     }
   };
 
@@ -147,6 +175,42 @@ const Dashboard = () => {
           </Card>
         </div>
 
+        {/* Gestion des catégories */}
+        <Card className="p-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-semibold">Gestion des catégories</h3>
+            <Button onClick={() => setShowCategoryModal(true)} icon={Plus} size="sm">
+              Nouvelle catégorie
+            </Button>
+          </div>
+          <div className="space-y-2">
+            {categories.map((category) => (
+              <div key={category.id} className="flex justify-between items-center p-3 border rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-4 h-4 rounded-full" 
+                    style={{ backgroundColor: category.color }}
+                  ></div>
+                  <span className={category.isActive ? '' : 'text-gray-400 line-through'}>
+                    {category.name}
+                  </span>
+                  {!category.isActive && <span className="text-xs text-gray-500">(inactive)</span>}
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => handleDeleteCategory(category.id)} 
+                    variant="danger" 
+                    size="sm" 
+                    icon={Trash2}
+                  >
+                    Supprimer
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
         {/* Quartiers les plus touchés */}
         <Card className="p-4">
           <h3 className="font-semibold mb-3">Top 5 quartiers les plus signalés</h3>
@@ -178,6 +242,58 @@ const Dashboard = () => {
             ))}
           </div>
         </Card>
+
+        {/* Modal création catégorie */}
+        <Modal 
+          isOpen={showCategoryModal} 
+          onClose={() => setShowCategoryModal(false)}
+          title="Créer une nouvelle catégorie"
+        >
+          <div className="space-y-4">
+            <Input
+              label="Nom de la catégorie"
+              value={categoryForm.name}
+              onChange={(e) => setCategoryForm({...categoryForm, name: e.target.value})}
+              placeholder="Ex: Eau potable"
+              required
+            />
+            <Input
+              label="Icône (optionnel)"
+              value={categoryForm.icon}
+              onChange={(e) => setCategoryForm({...categoryForm, icon: e.target.value})}
+              placeholder="Ex: 💧"
+            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Couleur
+              </label>
+              <input
+                type="color"
+                value={categoryForm.color}
+                onChange={(e) => setCategoryForm({...categoryForm, color: e.target.value})}
+                className="w-full h-10 border border-gray-300 rounded-lg"
+              />
+            </div>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="isActive"
+                checked={categoryForm.isActive}
+                onChange={(e) => setCategoryForm({...categoryForm, isActive: e.target.checked})}
+                className="mr-2"
+              />
+              <label htmlFor="isActive" className="text-sm">Catégorie active</label>
+            </div>
+            <div className="flex justify-end gap-3">
+              <Button variant="secondary" onClick={() => setShowCategoryModal(false)}>
+                Annuler
+              </Button>
+              <Button onClick={handleCreateCategory} disabled={!categoryForm.name.trim()}>
+                Créer
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </div>
     </FadeIn>
   );

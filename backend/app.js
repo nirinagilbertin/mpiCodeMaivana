@@ -5,7 +5,7 @@ import pg from 'pg';
 import connectPgSimple from 'connect-pg-simple';
 import dotenv from 'dotenv';
 
-import models, { sequelize } from './models/index.js';
+import models, { sequelize, Synchronisation } from './models/index.js';
 import userRoutes from './routes/user.routes.js';
 import reportRoute from './routes/report.routes.js';
 import categoryRoute from './routes/category.routes.js';
@@ -87,7 +87,7 @@ app.use((err, req, res, next) => {
 const initializeServer = async () => {
   try {
     await sequelize.authenticate();
-    // await sequelize.sync();
+    await Synchronisation(); // Créer les tables et l'admin
     console.log('Connexion à la base de données réussie.');
 
     app.listen(PORT, () => {

@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 import { config } from "dotenv";
+import bcrypt from "bcrypt";
 import createClassUser from "./User.js";
 import createClassCategory from "./Category.js";
 import createClassReport from "./Report.js";
@@ -46,13 +47,30 @@ Object.keys(model).forEach((modelName) => {
 });
 
 //#########___________SYNCHRONISATION_________________#################
-const Synchronisation = async () => {
-  
-  sequelize.sync({ force: true }).then(data => {
-    console.log('Synchronisation terminé avec succés', data)
-  }).catch(err => {
-    console.log('Une erreur est survenue', err)
-  })
+export const Synchronisation = async () => {
+  try {
+    const data = await sequelize.sync(); // Retirer force: true pour éviter les conflits
+
+    const adminEmail = "admin@admin.com";
+    const adminPassword = "123456";
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+
+    await model.User.findOrCreate({
+      where: { email: adminEmail },
+      defaults: {
+        email: adminEmail,
+        password: hashedPassword,
+        fullName: "Administrateur",
+        role: "admin",
+        isActive: true,
+      },
+    });
+
+    console.log("Synchronisation terminée avec succès", data);
+    console.log(`Admin créé : ${adminEmail} / ${adminPassword}`);
+  } catch (err) {
+    console.log("Une erreur est survenue", err);
+  }
 };
 // await Synchronisation();
 
