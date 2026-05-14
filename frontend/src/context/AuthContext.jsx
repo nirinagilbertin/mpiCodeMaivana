@@ -10,19 +10,22 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const checkAuth = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get("/users/profile");
+      setUser(response.data.data);
+      setError(null);
+    } catch (err) {
+      setUser(null);
+      setError(err.response?.data?.message || "Erreur de connexion");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     // Vérifier si l'utilisateur est déjà connecté (via cookie session)
-    const checkAuth = async () => {
-      try {
-        const response = await api.get("/users/profile");
-        setUser(response.data.data);
-      } catch (err) {
-        setUser(null);
-        setError(err.response?.data?.message || "Erreur de connexion");
-      } finally {
-        setLoading(false);
-      }
-    };
     checkAuth();
   }, []);
 

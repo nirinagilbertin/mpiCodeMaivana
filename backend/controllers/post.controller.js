@@ -139,6 +139,26 @@ class PostController {
         limit: parseInt(limit),
         offset,
       });
+      // --- NOUVEAU : Récupération des likes de l'utilisateur pour ces posts ---
+    let userLikesMap = new Map();
+    if (userId && rows.length > 0) {
+      const postIds = rows.map(post => post.id);
+      const likes = await this.Like.findAll({
+        where: {
+          userId: userId,
+          postId: { [Op.in]: postIds }
+        },
+        attributes: ['postId']
+      });
+      likes.forEach(like => userLikesMap.set(like.postId, true));
+    }
+
+    // Enrichir chaque post avec le champ userLiked
+    const postsWithLikeStatus = rows.map(post => {
+      const plain = post.toJSON();
+      plain.userLiked = userLikesMap.get(post.id) || false;
+      return plain;
+    });
 
       // Pour chaque post, récupérer le nombre de likes et de commentaires (déjà dans le modèle via likesCount/commentsCount, mais on peut rafraîchir)
       // Les compteurs sont maintenus par triggers ou hooks, on peut les utiliser directement.
