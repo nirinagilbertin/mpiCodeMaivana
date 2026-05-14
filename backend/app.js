@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 
 import models, { sequelize } from './models/index.js';
 import userRoutes from './routes/user.route.js';
+import reportRoute from './routes/report.route.js';
 
 dotenv.config();
 
@@ -57,6 +58,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/users', userRoutes);
+app.use('/api/reports', reportRoute(models));
 
 app.use((req, res) => {
   res.status(404).json({
