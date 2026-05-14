@@ -1,93 +1,70 @@
-import { useState, useEffect, useCallback } from "react";
-import type { PostWithRelations } from "../types/post";
-import type { Comment } from "../types/comment";
-import { getPosts, createPost, addComment, toggleLike } from "../services/posts";
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '../lib/supabase';
+import type { PostWithRelations } from '../types';
 
-interface UsePostsOptions {
-  postType?: string;
-}
+const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';
 
-export function usePosts(options?: UsePostsOptions) {
+export function usePosts() {
   const [posts, setPosts] = useState<PostWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const fetchPosts = useCallback(async () => {
-    setLoading(true);
-    setError(null);
     try {
-      const data = await getPosts(options);
-      setPosts(data);
+      setLoading(true);
+      
+      if (USE_MOCKS) {
+        const { mockPosts } = await import('../mocks/posts');
+        setPosts(mockPosts as PostWithRelations[]);
+      } else {
+        const { data, error } = await supabase
+          .from('posts')
+          .select(`
+            *,
+            user:users(*),
+            report:reports(*)
+          `)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setPosts(data as PostWithRelations[]);
+      }
     } catch (err) {
-      setError("Erreur lors du chargement des posts");
-      console.error(err);
+      console.error('Erreur posts:', err);
     } finally {
       setLoading(false);
     }
-  }, [options?.postType]);
+  }, []);
 
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
 
-  const addPost = async (
-    data: Parameters<typeof createPost>[0]
-  ): Promise<PostWithRelations | null> => {
-    try {
-      const newPost = await createPost(data);
-      setPosts((prev) => [newPost, ...prev]);
-      return newPost;
-    } catch (err) {
-      setError("Erreur lors de la création du post");
-      console.error(err);
-      return null;
-    }
+  const createPost = async (content: string, postType: string, userId: number) => {
+    const { data, error } = await supabase
+      .from('posts')
+      .insert({
+        content,
+        post_type: postType,
+        user_id: userId
+      })
+      .select('*, user:users(*)')
+      .single();
+
+    if (error) throw error;
+    setPosts(prev => [data as PostWithRelations, ...prev]);
+    return data;
   };
 
-  const commentOnPost = async (
-    postId: number,
-    content: string
-  ): Promise<Comment | null> => {
-    try {
-      const comment = await addComment(postId, content);
-      setPosts((prev) =>
-        prev.map((p) =>
-          p.id === postId
-            ? {
-                ...p,
-                commentsCount: p.commentsCount + 1,
-                comments: p.comments
-                  ? [...p.comments, comment]
-                  : [comment],
-              }
-            : p
-        )
-      );
-      return comment;
-    } catch (err) {
-      setError("Erreur lors de l'ajout du commentaire");
-      console.error(err);
-      return null;
-    }
+  const likePost = async (postId: number, userId: number) => {
+    await supabase.from('likes').insert({
+      user_id: userId,
+      post_id: postId
+    });
+    
+    setPosts(prev => prev.map(p => 
+      p.id === postId ? { ...p, likes_count: p.likesCount + 1 } : p
+    ));
   };
 
-  const likePost = async (
-    postId: number
-  ): Promise<{ liked: boolean; likesCount: number } | null> => {
-    try {
-      const result = await toggleLike(postId);
-      setPosts((prev) =>
-        prev.map((p) =>
-          p.id === postId ? { ...p, likesCount: result.likesCount } : p
-        )
-      );
-      return result;
-    } catch (err) {
-      setError("Erreur lors du like");
-      console.error(err);
-      return null;
-    }
-  };
-
-  return { posts, loading, error, fetchPosts, addPost, commentOnPost, likePost };
+  return { posts, loading, fetchPosts, createPost, likePost };
 }

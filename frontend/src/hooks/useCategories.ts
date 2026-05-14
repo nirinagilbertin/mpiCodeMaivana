@@ -1,21 +1,38 @@
-import { useState, useEffect } from "react";
-import type { Category } from "../types/category";
-import { getCategories } from "../services/categories";
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import type { Category } from '../types';
+
+const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';
 
 export function useCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getCategories()
-      .then(setCategories)
-      .catch((err) => {
-        setError("Erreur lors du chargement des catégories");
-        console.error(err);
-      })
-      .finally(() => setLoading(false));
+    if (USE_MOCKS) {
+      import('../mocks/categories').then(({ mockCategories }) => {
+        setCategories(mockCategories);
+        setLoading(false);
+      });
+    } else {
+      supabase
+        .from('categories')
+        .select('*')
+        .eq('is_active', true)
+        .then(({ data, error }) => {
+          if (!error && data) {
+            setCategories(data.map(c => ({
+              id: c.id,
+              name: c.name,
+              icon: c.icon,
+              color: c.color,
+              isActive: c.is_active
+            })));
+          }
+          setLoading(false);
+        });
+    }
   }, []);
 
-  return { categories, loading, error };
+  return { categories, loading };
 }

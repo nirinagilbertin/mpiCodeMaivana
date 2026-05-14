@@ -4,6 +4,7 @@ import { MapPin, AlertTriangle, Send, Camera } from "lucide-react";
 import { useReports } from "../../hooks/useReports";
 import { useCategories } from "../../hooks/useCategories";
 import { useGeolocation } from "../../hooks/useGeolocation";
+import { useAuth } from "../../context/AuthContext"; // 🔥 AJOUTÉ
 import { URGENCY_LEVELS } from "../../config/constants";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
@@ -17,6 +18,7 @@ export default function ReportForm() {
   const { addReport } = useReports();
   const { categories } = useCategories();
   const { latitude, longitude, loading: geoLoading } = useGeolocation();
+  const { user } = useAuth(); // 🔥 AJOUTÉ
 
   const [formData, setFormData] = useState({
     title: "",
@@ -46,6 +48,8 @@ export default function ReportForm() {
     }
 
     setSubmitting(true);
+    
+    // 🔥 MODIFIÉ : utiliser user.id
     const result = await addReport({
       title: formData.title,
       description: formData.description,
@@ -54,7 +58,7 @@ export default function ReportForm() {
       latitude,
       longitude,
       photoUrl: formData.photoUrl,
-      userId: 1,
+      userId: user?.id || 2, // 🔥 ID de l'utilisateur connecté
     });
 
     setSubmitting(false);
@@ -78,7 +82,6 @@ export default function ReportForm() {
   const handleFileSelect = (selectedFile: File | null) => {
     setFile(selectedFile);
     if (selectedFile) {
-      // En mode mock, on simule une URL
       setFormData((prev) => ({
         ...prev,
         photoUrl: URL.createObjectURL(selectedFile),
