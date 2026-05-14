@@ -1,0 +1,9 @@
+export { default as HomePage } from "./HomePage";
+export { default as MapPage } from "./MapPage";
+export { default as NewReportPage } from "./NewReportPage";
+export { default as ReportDetailPage } from "./ReportDetailPage";
+export { default as PostsPage } from "./PostsPage";
+export { default as ProfilePage } from "./ProfilePage";
+export { default as NotFoundPage } from "./NotFoundPage";
+export { default as DashboardPage } from "./admin/DashboardPage";
+export { default as ReportsManagerPage } from "./admin/ReportsManagerPage";
