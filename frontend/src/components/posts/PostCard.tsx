@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -18,6 +17,8 @@ import LikeButton from "./LikeButton";
 
 interface PostCardProps {
   post: PostWithRelations;
+  // 🔥 FIX #4 : prop liked ajoutée
+  liked: boolean;
   onLike?: (postId: number) => void;
   onComment?: (postId: number) => void;
 }
@@ -49,8 +50,8 @@ const postTypeConfig = {
   },
 };
 
-export default function PostCard({ post, onLike, onComment }: PostCardProps) {
-  const config = postTypeConfig[post.postType] || postTypeConfig.info;
+export default function PostCard({ post, liked, onLike, onComment }: PostCardProps) {
+  const config = postTypeConfig[post.postType as keyof typeof postTypeConfig] || postTypeConfig.info;
   const TypeIcon = config.icon;
 
   return (
@@ -72,7 +73,7 @@ export default function PostCard({ post, onLike, onComment }: PostCardProps) {
         {/* Auteur */}
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-sm font-bold shadow-sm">
-            {post.user?.fullName?.charAt(0) || "?"}
+            {post.user?.fullName?.charAt(0)?.toUpperCase() || "?"}
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-900">
@@ -114,7 +115,7 @@ export default function PostCard({ post, onLike, onComment }: PostCardProps) {
         {/* Actions */}
         <div className="flex items-center gap-4 pt-3 border-t border-gray-50">
           <LikeButton
-            liked={false}
+            liked={liked}  // 🔥 FIX #4 : valeur réelle du like
             count={post.likesCount}
             onClick={() => onLike?.(post.id)}
           />

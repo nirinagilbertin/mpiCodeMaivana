@@ -1,6 +1,5 @@
-import { createContext, useContext, useEffect, type ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
 import { useNotifications } from "../hooks/useNotifications";
-import { useSocketContext } from "./SocketContext";
 import type { Notification } from "../types/notification";
 
 interface NotificationContextType {
@@ -20,32 +19,17 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     loading,
     markAsRead,
     markAllAsRead,
-    fetchNotifications,
   } = useNotifications();
 
-  const { on } = useSocketContext();
-
-  // Écoute les notifications en temps réel
-  useEffect(() => {
-    on("notification", () => {
-      fetchNotifications();
-    });
-
-    return () => {
-      // Le cleanup est géré par useSocket
-    };
-  }, [on, fetchNotifications]);
-
-  const value: NotificationContextType = {
-    notifications,
-    unreadCount,
-    loading,
-    markAsRead,
-    markAllAsRead,
-  };
 
   return (
-    <NotificationContext.Provider value={value}>
+    <NotificationContext.Provider value={{
+      notifications,
+      unreadCount,
+      loading,
+      markAsRead,
+      markAllAsRead,
+    }}>
       {children}
     </NotificationContext.Provider>
   );

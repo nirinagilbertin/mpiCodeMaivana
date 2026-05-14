@@ -1,22 +1,21 @@
 import { AuthProvider } from "./context/AuthContext";
-import { SocketProvider } from "./context/SocketContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import { AppRouter } from "./router";
-import { supabase } from './lib/supabase';
 
-supabase.from('reports').select('*').then(({ data, error }) => {
-  console.log('✅ Connexion Supabase OK :', data);
-  console.log('❌ Erreur :', error);
-});
+const env = import.meta.env as unknown as {
+  VITE_SUPABASE_URL?: string;
+  VITE_SUPABASE_ANON_KEY?: string;
+};
+
+console.log(env.VITE_SUPABASE_URL)
+console.log(env.VITE_SUPABASE_ANON_KEY)
 
 function App() {
   return (
     <AuthProvider>
-      <SocketProvider>
-        <NotificationProvider>
-          <AppRouter />
-        </NotificationProvider>
-      </SocketProvider>
+      <NotificationProvider>
+        <AppRouter />
+      </NotificationProvider>
     </AuthProvider>
   );
 }

@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { Send, User } from "lucide-react";
 import type { Comment } from "../../types/comment";
-import { usePosts } from "../../hooks/usePosts";
+// 🔥 FIX #1 & #3 : on n'appelle plus usePosts() ici.
+// commentOnPost est reçu en prop depuis PostList (qui est le seul à appeler usePosts).
 import { formatRelativeTime } from "../../utils/formatDate";
 import Button from "../ui/Button";
 import EmptyState from "../ui/EmptyState";
@@ -9,13 +10,15 @@ import EmptyState from "../ui/EmptyState";
 interface CommentSectionProps {
   postId: number;
   comments: Comment[];
+  // 🔥 Prop ajoutée
+  onComment: (postId: number, content: string) => Promise<any>;
 }
 
 export default function CommentSection({
   postId,
   comments,
+  onComment,
 }: CommentSectionProps) {
-  const { commentOnPost } = usePosts();
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -24,11 +27,16 @@ export default function CommentSection({
     if (!newComment.trim()) return;
 
     setSubmitting(true);
-    const result = await commentOnPost(postId, newComment.trim());
-    if (result) {
-      setNewComment("");
+    try {
+      const result = await onComment(postId, newComment.trim());
+      if (result) {
+        setNewComment("");
+      }
+    } catch (err) {
+      console.error("Erreur commentaire:", err);
+    } finally {
+      setSubmitting(false);
     }
-    setSubmitting(false);
   };
 
   return (

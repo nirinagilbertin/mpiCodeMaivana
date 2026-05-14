@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // 🔥 AJOUTÉ
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { MapPin, AlertTriangle, PlusCircle } from "lucide-react"; // 🔥 PlusCircle ajouté
+import { MapPin, AlertTriangle, PlusCircle } from "lucide-react";
 import MapView from "../components/map/MapView";
-import { useSocketContext } from "../context/SocketContext";
 import { useReports } from "../hooks/useReports";
 import Card from "../components/ui/Card";
 import Badge from "../components/ui/Badge";
@@ -11,14 +10,13 @@ import Button from "../components/ui/Button";
 import { formatRelativeTime } from "../utils/formatDate";
 
 export default function MapPage() {
-  const navigate = useNavigate(); // 🔥 AJOUTÉ
+  const navigate = useNavigate();
   const [showHeatmap, setShowHeatmap] = useState(false);
-  const { newReports } = useSocketContext();
   const { reports, loading } = useReports();
 
-  console.log('🗺️ Reports Supabase:', reports?.length, reports);
-
-  const allReports = [...(reports || []), ...(newReports || [])];
+  // 🔥 SocketContext supprimé — plus de newReports simulés
+  // Si tu veux du temps réel plus tard : supabase.channel() dans useReports()
+  const allReports = reports || [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -34,26 +32,22 @@ export default function MapPage() {
               <MapPin size={20} className="text-green-600" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">
-                Carte interactive
-              </h1>
+              <h1 className="text-xl font-bold text-gray-900">Carte interactive</h1>
               <p className="text-sm text-gray-500">
-                {loading ? 'Chargement...' : `${reports?.length || 0} incidents signalés`}
+                {loading ? "Chargement..." : `${allReports.length} incidents signalés`}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            {/* 🔥 BOUTON SIGNALER */}
             <Button
               variant="primary"
               size="sm"
               icon={<PlusCircle size={16} />}
-              onClick={() => navigate('/new-report')}
+              onClick={() => navigate("/new-report")}
             >
               Signaler un incident
             </Button>
-
             <Button
               variant={showHeatmap ? "primary" : "secondary"}
               size="sm"
@@ -93,20 +87,21 @@ export default function MapPage() {
                 <Card key={report.id} padding="sm" className="flex items-center gap-3">
                   <AlertTriangle
                     size={16}
-                    className={report.urgency === 'critical' ? 'text-red-500' : 'text-orange-500'}
+                    className={report.urgency === "critical" ? "text-red-500" : "text-orange-500"}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {report.title}
-                    </p>
+                    <p className="text-sm font-medium text-gray-900 truncate">{report.title}</p>
                     <p className="text-xs text-gray-500">
-                      {report.created_at || report.createdAt 
+                      {report.created_at || report.createdAt
                         ? formatRelativeTime(report.created_at || report.createdAt)
-                        : 'À l\'instant'}
+                        : "À l'instant"}
                     </p>
                   </div>
-                  <Badge color={report.urgency === 'critical' ? '#EF4444' : '#F59E0B'} size="sm">
-                    {report.urgency || 'medium'}
+                  <Badge
+                    color={report.urgency === "critical" ? "#EF4444" : "#F59E0B"}
+                    size="sm"
+                  >
+                    {report.urgency || "medium"}
                   </Badge>
                 </Card>
               ))}

@@ -15,6 +15,7 @@ const LoginPage = lazy(() => import("../pages/LoginPage"));
 const DashboardPage = lazy(() => import("../pages/admin/DashboardPage"));
 const ReportsManagerPage = lazy(() => import("../pages/admin/ReportsManagerPage"));
 const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
+const CriticalZonesPage = lazy(() => import("../pages/admin/CriticalZonesPage"));
 
 function PageLoader() {
   return (
@@ -131,6 +132,14 @@ const router = createBrowserRouter([
                 element: (
                   <SuspenseWrapper>
                     <ReportsManagerPage />
+                  </SuspenseWrapper>
+                ),
+              },
+              {
+                path: "admin/critical-zones",
+                element: (
+                  <SuspenseWrapper>
+                    <CriticalZonesPage />
                   </SuspenseWrapper>
                 ),
               },
