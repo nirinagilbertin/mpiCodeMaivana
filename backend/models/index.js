@@ -29,6 +29,7 @@ export const sequelize = new Sequelize(
 
 const model = {};
 
+model.sequelize = sequelize;
 model.User = createClassUser(sequelize);
 model.Category = createClassCategory(sequelize);
 model.Report = createClassReport(sequelize);
@@ -43,5 +44,16 @@ Object.keys(model).forEach((modelName) => {
     model[modelName].associate(model);
   }
 });
+
+//#########___________SYNCHRONISATION_________________#################
+const Synchronisation = async () => {
+  
+  sequelize.sync({ force: true }).then(data => {
+    console.log('Synchronisation terminé avec succés', data)
+  }).catch(err => {
+    console.log('Une erreur est survenue', err)
+  })
+};
+// await Synchronisation();
 
 export default model;
