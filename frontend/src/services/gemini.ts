@@ -1,11 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const env = import.meta.env as unknown as {
-  GEMINI_API_KEY?: string;
-};
+const apiKey = (import.meta as unknown as { env: Record<string, string> }).env.GEMINI_API_KEY;
 
-const apiKey = env.GEMINI_API_KEY;
-if (!apiKey) throw new Error("GEMINI_API_KEY is required");
 const genAI = new GoogleGenerativeAI(apiKey);
 
 // ✅ Modèle confirmé disponible et gratuit
