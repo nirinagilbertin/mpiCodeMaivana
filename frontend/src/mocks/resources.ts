@@ -1,24 +1,111 @@
-import { ResourceZone } from '../types/resources';
+import { Pharmacy } from '../types/resources';
 
-export const mockZones: ResourceZone[] = [
-  // Eau
-  { id: "w1", name: "Réservoir Centre-ville", lat: -21.4536, lng: 47.0858, type: "water", level: 78, incidents: 1, consommation: 65 },
-  { id: "w2", name: "Château d'eau Anjoma", lat: -21.4600, lng: 47.0780, type: "water", level: 22, incidents: 4, consommation: 88 },
-  { id: "w3", name: "Réservoir Ambalapaiso", lat: -21.4450, lng: 47.0950, type: "water", level: 55, incidents: 2, consommation: 60 },
-  { id: "w4", name: "Station pompage Tanambao", lat: -21.4480, lng: 47.0720, type: "water", level: 90, incidents: 0, consommation: 40 },
-  { id: "w5", name: "Réservoir Andrainjato", lat: -21.4650, lng: 47.0900, type: "water", level: 15, incidents: 6, consommation: 95 },
-  
-  // Électricité
-  { id: "e1", name: "Transformateur Centre", lat: -21.4520, lng: 47.0880, type: "electricity", level: 68, incidents: 1, consommation: 72 },
-  { id: "e2", name: "Poste Ivory Avaratra", lat: -21.4400, lng: 47.0800, type: "electricity", level: 88, incidents: 3, consommation: 90 },
-  { id: "e3", name: "Transformateur Ankofafa", lat: -21.4700, lng: 47.1000, type: "electricity", level: 35, incidents: 5, consommation: 78 },
-  { id: "e4", name: "Poste Mahamanina", lat: -21.4500, lng: 47.1050, type: "electricity", level: 50, incidents: 0, consommation: 45 },
-  { id: "e5", name: "Transformateur Andoharanofotsy", lat: -21.4380, lng: 47.0880, type: "electricity", level: 72, incidents: 2, consommation: 60 },
+export const mockPharmacies: Pharmacy[] = [
+  {
+    id: "p1",
+    name: "Pharmacie du Centre",
+    address: "12 Rue du Commerce, Centre-ville",
+    lat: -21.4536,
+    lng: 47.0858,
+    phone: "020 75 123 45",
+    isOnDuty: true,
+    dutyStart: "2026-05-15T20:00:00",
+    dutyEnd: "2026-05-16T08:00:00",
+  },
+  {
+    id: "p2",
+    name: "Pharmacie EZAKA",
+    address: "G3VR+64H, Fianarantsoa",
+    lat: -21.4550,
+    lng: 47.0820,
+    phone: "020 75 678 90",
+    isOnDuty: false,
+  },
+  {
+    id: "p3",
+    name: "Pharmacie Ambalapaiso",
+    address: "23 Rue Radama, Ambalapaiso",
+    lat: -21.4450,
+    lng: 47.0950,
+    phone: "020 75 234 56",
+    isOnDuty: false,
+    dutyStart: "2026-05-15T20:00:00",
+    dutyEnd: "2026-05-16T08:00:00",
+  },
+  {
+    id: "p4",
+    name: "pharmacie Centrale du Sud",
+    address: "Centre-ville Fianarantsoa",
+    lat: -21.4450,
+    lng: 47.0890,
+    phone: "020 75 345 67",
+    isOnDuty: false,
+  },
+  {
+    id: "p5",
+    name: "Pharmacie Andrainjato",
+    address: "15 Rue du Marché, Andrainjato",
+    lat: -21.4650,
+    lng: 47.0900,
+    phone: "020 75 456 78",
+    isOnDuty: true,
+    dutyStart: "2026-05-15T20:00:00",
+    dutyEnd: "2026-05-16T08:00:00",
+  },
+  {
+    id: "p6",
+    name: "Pharmacie Anjoma",
+    address: "G3WQ+89W, Fianarantsoa",
+    lat: -21.4520,
+    lng: 47.0830,
+    phone: "020 75 567 89",
+    isOnDuty: false,
+  },
+  {
+    id: "p7",
+    name: "Pharmacie Mahamanina",
+    address: "42 Rue de la Santé, Mahamanina",
+    lat: -21.4500,
+    lng: 47.1050,
+    phone: "020 75 678 90",
+    isOnDuty: false,
+  },
+  {
+    id: "p8",
+    name: "Pharmacie Ankofafa",
+    address: "7 Rue Principale, Ankofafa",
+    lat: -21.4700,
+    lng: 47.1000,
+    phone: "020 75 789 01",
+    isOnDuty: true,
+    dutyStart: "2026-05-15T20:00:00",
+    dutyEnd: "2026-05-16T08:00:00",
+  },
+  {
+    id: "p9",
+    name: "Pharmacie MAMISOA Ankofafa",
+    address: "1Ankofafa, Fianarantsoa",
+    lat: -21.4380,
+    lng: 47.0940,
+    phone: "020 75 890 12",
+    isOnDuty: false,
+  },
+  {
+    id: "p10",
+    name: "pharmacie Lam Seck",
+    address: "H33Q+9QF, 7, Fianarantsoa",
+    lat: -21.4460,
+    lng: 47.0880,
+    phone: "020 75 901 23",
+    isOnDuty: false,
+  },
+  {
+    id: "p11",
+    name: "Pharmacie Sandratra",
+    address: "RN7, Fianarantsoa",
+    lat: -21.4540,
+    lng: 47.0860,
+    phone: "020 75 901 23",
+    isOnDuty: false,
+  },
 ];
-
-export function getZoneStatus(zone: ResourceZone): 'critical' | 'warning' | 'normal' {
-  // Critique si niveau bas OU beaucoup d'incidents
-  if (zone.level < 30 || zone.incidents >= 5) return 'critical';
-  if (zone.level < 55 || zone.incidents >= 3) return 'warning';
-  return 'normal';
-}

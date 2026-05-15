@@ -140,7 +140,7 @@ export default function ReportForm() {
               placeholder="Choisir une catégorie"
               options={categories.map((cat) => ({
                 value: cat.id,
-                label: `${cat.icon || ""} ${cat.name}`,
+                label: `${cat.name}`,
               }))}
               value={formData.categoryId || ""}
               onChange={(e) =>
