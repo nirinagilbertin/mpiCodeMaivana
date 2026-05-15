@@ -33,7 +33,7 @@ export default function Navbar() {
     { to: "/", label: "Accueil", icon: Home },
     { to: "/map", label: "Carte", icon: Map },
     { to: "/posts", label: "Actualités", icon: Newspaper },
-    { to: "/resources", label: "Ressources", icon: Layers },
+    { to: "/resources", label: "Utilitaires", icon: Layers },
     { to: "/chatbot", label: "Assistant", icon: MessageCircle },
   ];
 

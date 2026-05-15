@@ -83,7 +83,7 @@ export default function HomePage() {
               <Link to="/new-report">
                 <Button
                   size="lg"
-                  className="bg-white text-blue-700 hover:bg-blue-50 shadow-xl"
+                  className="text-blue-700 hover:bg-blue-50 shadow-xl"
                   icon={<AlertTriangle size={20} />}
                 >
                   Signaler un problème
@@ -273,7 +273,7 @@ export default function HomePage() {
             <Link to={user ? "/new-report" : "/register"}>
               <Button
                 size="lg"
-                className="bg-white text-blue-700 hover:bg-blue-50 shadow-xl"
+                className="text-blue-700 hover:bg-blue-50 shadow-xl"
                 icon={<ArrowRight size={20} />}
               >
                 {user ? "Faire un signalement" : "Créer un compte"}
