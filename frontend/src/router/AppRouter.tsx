@@ -16,6 +16,7 @@ const DashboardPage = lazy(() => import("../pages/admin/DashboardPage"));
 const ReportsManagerPage = lazy(() => import("../pages/admin/ReportsManagerPage"));
 const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
 const CriticalZonesPage = lazy(() => import("../pages/admin/CriticalZonesPage"));
+const ChatbotPage = lazy(() => import("../pages/ChatbotPage"));
 
 function PageLoader() {
   return (
@@ -98,6 +99,14 @@ const router = createBrowserRouter([
             element: (
               <SuspenseWrapper>
                 <ProfilePage />
+              </SuspenseWrapper>
+            ),
+          },
+          {
+            path: "chatbot",
+            element: (
+              <SuspenseWrapper>
+                <ChatbotPage />
               </SuspenseWrapper>
             ),
           },
