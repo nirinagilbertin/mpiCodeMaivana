@@ -4,3 +4,4 @@ export { mockReports } from "./reports";
 export { mockPosts } from "./posts";
 export { mockComments } from "./comments";
 export { mockNotifications } from "./notifications";
+export { mockZones } from "./resources";

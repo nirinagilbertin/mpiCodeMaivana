@@ -12,11 +12,13 @@ const ReportDetailPage = lazy(() => import("../pages/ReportDetailPage"));
 const PostsPage = lazy(() => import("../pages/PostsPage"));
 const ProfilePage = lazy(() => import("../pages/ProfilePage"));
 const LoginPage = lazy(() => import("../pages/LoginPage"));
+const RegisterPage = lazy(() => import("../pages/RegisterPage"));
 const DashboardPage = lazy(() => import("../pages/admin/DashboardPage"));
 const ReportsManagerPage = lazy(() => import("../pages/admin/ReportsManagerPage"));
 const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
 const CriticalZonesPage = lazy(() => import("../pages/admin/CriticalZonesPage"));
 const ChatbotPage = lazy(() => import("../pages/ChatbotPage"));
+const ResourcePage = lazy(() => import("../pages/ResourcePage"));
 
 function PageLoader() {
   return (
@@ -41,6 +43,21 @@ const router = createBrowserRouter([
         element: (
           <SuspenseWrapper>
             <LoginPage />
+          </SuspenseWrapper>
+        ),
+      },
+    ],
+  },
+  // ===== REGISTER (public) =====
+  {
+    path: "/register",
+    element: <AuthLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <SuspenseWrapper>
+            <RegisterPage />
           </SuspenseWrapper>
         ),
       },
@@ -91,6 +108,14 @@ const router = createBrowserRouter([
             element: (
               <SuspenseWrapper>
                 <NewReportPage />
+              </SuspenseWrapper>
+            ),
+          },
+          {
+            path: "resources",
+            element: (
+              <SuspenseWrapper>
+                <ResourcePage />
               </SuspenseWrapper>
             ),
           },

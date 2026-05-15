@@ -15,6 +15,7 @@ import {
   LayoutDashboard,
   Newspaper,
   MessageCircle,
+  Layers,
 } from "lucide-react";
 import { useAuthContext } from "../../context/AuthContext";
 import { useNotificationContext } from "../../context/NotificationContext";
@@ -32,6 +33,7 @@ export default function Navbar() {
     { to: "/", label: "Accueil", icon: Home },
     { to: "/map", label: "Carte", icon: Map },
     { to: "/posts", label: "Actualités", icon: Newspaper },
+    { to: "/resources", label: "Ressources", icon: Layers },
     { to: "/chatbot", label: "Assistant", icon: MessageCircle },
   ];
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LogIn, Mail, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
   const { signIn } = useAuth();
   const navigate = useNavigate();
 
@@ -22,7 +23,7 @@ export default function LoginPage() {
 
     try {
       await signIn(email, password);
-      navigate('/'); // Rediriger après connexion
+      navigate('/');
     } catch (err: any) {
       setError(err.message || 'Erreur de connexion');
     } finally {
@@ -31,26 +32,32 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#f7f8f7] flex items-center justify-center px-4">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
         <Card padding="lg">
-          <div className="text-center mb-6">
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-green-50 border border-green-100 flex items-center justify-center mx-auto mb-4">
               <LogIn size={24} className="text-green-600" />
             </div>
-            <h1 className="text-xl font-bold text-gray-900">Connexion</h1>
-            <p className="text-sm text-gray-500 mt-1">
+
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Connexion
+            </h1>
+
+            <p className="text-sm text-gray-500 mt-2">
               Accédez à Fianara Pulse
             </p>
           </div>
 
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg">
+              <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl">
                 {error}
               </div>
             )}
@@ -85,13 +92,17 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Comptes de test */}
-          <div className="mt-6 p-3 bg-gray-50 rounded-lg">
-            <p className="text-xs font-medium text-gray-700 mb-2">Comptes de test :</p>
-            <div className="space-y-1 text-xs text-gray-500">
-              <p>👤 <strong>Citoyen :</strong> citizen@fianara.mg / citizen123</p>
-              <p>👑 <strong>Admin :</strong> admin@fianara.mg / admin123</p>
-            </div>
+          {/* Lien inscription */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-500">
+              Pas encore de compte ?{' '}
+              <Link
+                to="/register"
+                className="text-green-600 font-medium hover:text-green-700 transition-colors"
+              >
+                S’inscrire
+              </Link>
+            </p>
           </div>
         </Card>
       </motion.div>

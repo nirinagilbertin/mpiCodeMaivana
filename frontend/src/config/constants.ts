@@ -50,3 +50,17 @@ export const MOCK_IMAGES = {
   road: "https://images.unsplash.com/photo-1515162816999-a0c47dc1927f?w=600&h=400&fit=crop",
   avatar: "https://ui-avatars.com/api/?name=Fianara+Pulse&background=3B82F6&color=fff&size=128",
 } as const;
+
+
+// Similation de ressources et priorités
+export const MAP_CENTER_FIANAR = { lat: -21.4536, lng: 47.0858 };
+export const MAP_ZOOM_FIANAR = 14;
+
+export const SCORE_LEVELS = {
+  critical: { min: 0.7, color: '#EF4444', label: 'Critique' },
+  warning: { min: 0.4, color: '#F59E0B', label: 'Alerte' },
+  normal: { min: 0, color: '#10B981', label: 'Normal' },
+};
+
+export const SIMULATION_INTERVAL_MS = 4000;
+export const FLOW_PARTICLE_COUNT = 8;

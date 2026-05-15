@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = (import.meta as unknown as { env: Record<string, string> }).env.GEMINI_API_KEY;
 
-const genAI = new GoogleGenerativeAI(apiKey);
+const genAI = new GoogleGenerativeAI("AIzaSyDks2yAs_N5VPQr9RlBg0_EaWQp201tqOg");
 
 // ✅ Modèle confirmé disponible et gratuit
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
